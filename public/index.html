@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html ng-app="nirc" ng-controller="RootCtrl">
+	<head>
+		<title>Designer Network</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, user-scalable=no">
+		<meta name="description" content="#DN is an IRC channel orignally founded as a place for Designer News users to hang out and chat. In the two years since then it has grown into a vibrant community of talented designers." />
+		<link href='/images/favicon.png' rel='shortcut icon' id='favicon'>
+
+		<link href='/stylesheets/style.css' media='screen' rel='stylesheet' type='text/css'/>
+		
+		<script src='/socket.io/socket.io.js'></script>
+		<script src='/javascripts/vendor/mousetrap.min.js'></script>
+		<script src='/javascripts/vendor/angular.min.js'></script>
+		<script src='/javascripts/vendor/angular-sanitize.min.js'></script>
+		<script src='/javascripts/vendor/lodash-custom.min.js'></script>
+		<script src='/javascripts/nirc.js'></script>
+		<base href="/">
+	</head>
+	<body ng-controller="MainCtrl">
+		<!-- config overlay -->
+		<div class="overlay" ng-if="!client.connected">
+			<div class="config">
+				<div class="titlebar">
+					<h1>Designer Network</h1>
+					<p>Designers talking in a freenode channel</p>
+				</div>
+
+				<form ng-submit="connect()" name="configForm" novalidate>
+					<div class="control-group">
+						<label for="nick">Nickname:</label>
+						<input type="text" name="nick" id="nick"
+									 ng-model="config.nickname" required>
+					</div>
+					<div class="control-group">
+						<input type="submit" value="Connect" ng-disabled="configForm.$invalid">
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+		<header>
+			<div>
+				<ul class="tabbar" ng-controller="TabCtrl">
+					<li ng-class="{active: isActive(client.statusChannel)}" ng-show="expanded || isActive(client.statusChannel)" class="channel-tab">
+						<a href ng-click="setActive(client.statusChannel)" ng-class="iconFor(client.statusChannel)" class="channel">Status</a>
+					</li>
+					<li ng-repeat="channel in client.channels" ng-class="{active: isActive(channel)}" class="channel-tab" ng-show="expanded || isActive(channel)">
+						<a href ng-click="setActive(channel)" ng-class="iconFor(channel)" class="channel">{{channel.name}}</a>
+						<a href ng-click="closeTab(channel)" class="close">✕</a>
+					</li>
+				</ul>
+			</div>
+			<div class="logo">
+				&nbsp;
+			</div>
+			<div>
+				<a href ng-click="userList = !userList" class="users-toggle">
+					<img src="/images/users.svg" alt="User list">
+				</a>
+			</div>
+		</header>
+
+		<div class="wrapper">
+			<!-- main content pane -->
+			<ul class="content" scroll-glue ng-class="userList ? 'users-shown' : 'users-hidden'">
+				<li ng-repeat="event in client.activeChannel.history" ng-class="{'mention' : event.mention, 'status-message' : event.status_message}">
+					<span class="sender" ng-style="set_color(event.from.nick)">{{event.from.nick}}</span>
+					<span class="message" ng-style="is_action(event.message)" ng-bind-html="strip_codes(event.message) | linky:'_blank'"></span>
+					<span class="timestamp">{{event.timestamp | date:'HH:mm:ss'}}</span>
+				</li>
+			</ul>
+			<!-- user list -->
+			
+			<div class="users" ng-class="userList ? 'users-shown' : 'users-hidden'">
+				<ul ng-controller="UserCtrl" >
+					<li ng-repeat="user in client.activeChannel.users">
+						<a ng-click="messageTo(user)" href>{{user.nick}}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<input type="text" class="user-input" ng-class="userList ? 'users-shown' : 'users-hidden'" placeholder="Type a message here" read-line="client.say(text)"
+				complete-from="client.activeChannel.users">
+	</body>
+</html>
