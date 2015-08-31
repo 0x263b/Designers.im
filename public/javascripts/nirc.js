@@ -241,7 +241,6 @@ angular.module('nirc')
 
 			connect: function(options) {
 				opts = angular.copy(options);
-				opts.channels = options.channels.join(', ');
 
 				socket.emit('connectToIRC', {
 					options: opts
@@ -432,13 +431,8 @@ angular.module('nirc')
 		var randomnick = 'DN' + Math.floor((Math.random() * 1000) + 1);
 
 		var config = {
-			server: 'chat.freenode.net',
-			port: 6697,
 			nickname: search.nick || randomnick,
 			userName: search.nick || randomnick,
-			channels: ["#DN"],
-			ssl: true,
-			password: null,
 			load: function() {}, /* nop */
 			save: function() {} /* nop */
 		};
@@ -457,15 +451,6 @@ angular.module('nirc')
 				angular.extend(this, saved);
 			};
 		}
-
-		/* if only a single channel was provided convert to an array */
-		if (typeof (config.channels) == 'string') {
-			config.channels = [config.channels];
-		}
-
-		config.channels = config.channels.map(function(chName) {
-			return chName[0] != '#' ? '#' + chName.toUpperCase() : chName.toUpperCase();
-		});
 
 		/* only load if no options were passed in as search */
 		var anySet = _.any(['nick'], function(k) {
