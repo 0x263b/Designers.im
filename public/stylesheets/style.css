@@ -1,4 +1,5 @@
 * {
+	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
@@ -154,6 +155,8 @@ a:hover {
 
 .content .message {
 	padding: 6px 10px;
+	flex-grow: 1;
+	-webkit-flex-grow: 1;
 }
 
 .content .sender {
@@ -168,25 +171,27 @@ a:hover {
 	width: 140px;
 	background-color: rgba(0,0,0,0.01);
 	padding: 6px 10px;
+	flex-shrink: 0;
+	-webkit-flex-shrink: 0;
 }
 
 .content .timestamp {
 	color: rgba(0,0,0,0.3);
 	font-size: 9pt;
-	text-align: right;
-	width: 55px;
 	padding: 6px;
+	flex-shrink: 0;
+	-webkit-flex-shrink: 0;
 }
 
 .content .timestamp,
 .content .sender,
 .content .message {
-	display: table-cell;
-	vertical-align: top;
+
 }
 
 .content li {
-	display: table;
+	display: flex;
+	display: -webkit-flex;
 	width: 100%;
 	padding: 0;
 	font-family: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -385,6 +390,49 @@ header .logo img {
 	padding-top: 42px;
 }
 
+
+.embed {
+	margin: 10px 0;
+	padding: 0;
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;
+	-webkit-flex-direction: row;
+}
+
+.content .message .embed a {
+	text-decoration: none;
+}
+
+.thumb {
+	line-height: 0;
+}
+
+.thumb img {
+	max-width: 150px;
+	max-height: 100px;
+}
+
+.description {
+	padding: 15px;
+	background-color: #eee;
+	max-width: 450px;
+}
+
+.description h1 {
+	margin: 0 0 5px;
+	font-size: 10pt;
+}
+
+.description p {
+	margin: 0;
+}
+
+.image-embed {
+	max-width: 400px;
+	max-height: 400px;
+	width: 100%;
+}
 
 
 @media (max-width: 720px) {

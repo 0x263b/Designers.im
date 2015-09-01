@@ -29,7 +29,7 @@ if (!Array.prototype.last) {
 	};
 }
 
-angular.module('nirc', ['ngSanitize'])
+angular.module('dnirc', ['ngSanitize'])
 	.config(function($locationProvider) {
 		$locationProvider.html5Mode(true);
 	})
@@ -155,7 +155,7 @@ angular.module('nirc', ['ngSanitize'])
 		};
 	});
 
-angular.module('nirc')
+angular.module('dnirc')
 	.factory('Channel', function() {
 
 		var Channel = function(name, opts) {
@@ -188,20 +188,20 @@ angular.module('nirc')
 		return Channel;
 	});
 
-angular.module('nirc')
+angular.module('dnirc')
 	.factory('ChatEvent', function() {
-		var ChatEvent = function(from, to, text, opts) {
+		var ChatEvent = function(from, to, text, embed) {
 			this.from = from;
 			this.to = to;
 			this.message = text;
-			this.opts = opts || {};
+			this.embed = embed || false;
 			this.timestamp = new Date();
 		};
 
 		return ChatEvent;
 	});
 
-angular.module('nirc')
+angular.module('dnirc')
 	.factory('Client', function($rootScope, Channel, User, ChatEvent, Socket) {
 		var socket = new Socket(null);
 
@@ -362,7 +362,8 @@ angular.module('nirc')
 			var event = new ChatEvent(
 				new User(d.from || ''),
 				new User(d.receiver),
-				d.message
+				d.message,
+				d.embed
 			);
 			Client.addEvent(event);
 		});
@@ -425,7 +426,7 @@ angular.module('nirc')
 	});
 
 /* jshint browser:true */
-angular.module('nirc')
+angular.module('dnirc')
 	.factory('Config', function($location) {
 		var search = $location.search();
 		var randomnick = 'DN' + Math.floor((Math.random() * 1000) + 1);
@@ -439,7 +440,7 @@ angular.module('nirc')
 
 		if ('localStorage' in window) {
 			config.save = function() {
-				localStorage.setItem('nirc:config', JSON.stringify(
+				localStorage.setItem('dnirc:config', JSON.stringify(
 					{
 						nickname: this.nickname,
 						userName: this.nickname
@@ -447,7 +448,7 @@ angular.module('nirc')
 				));
 			};
 			config.load = function() {
-				var saved = JSON.parse(localStorage.getItem('nirc:config') || '{}');
+				var saved = JSON.parse(localStorage.getItem('dnirc:config') || '{}');
 				angular.extend(this, saved);
 			};
 		}
@@ -464,7 +465,7 @@ angular.module('nirc')
 		return config;
 	});
 
-angular.module('nirc')
+angular.module('dnirc')
 	.directive('readLine', function() {
 		return {
 			restrict: 'A',
@@ -552,7 +553,7 @@ angular.module('nirc')
 		};
 	});
 
-angular.module('nirc')
+angular.module('dnirc')
 	.directive('scrollGlue', function() {
 		return {
 			restrict: 'A',
@@ -576,7 +577,7 @@ angular.module('nirc')
 		};
 	});
 
-angular.module('nirc')
+angular.module('dnirc')
 	.factory('Mousetrap', function($rootScope) {
 		return {
 			bind: function(expression, callback) {
@@ -589,7 +590,7 @@ angular.module('nirc')
 		};
 	});
 
-angular.module('nirc')
+angular.module('dnirc')
 	.factory('Notification', function($q, $rootScope) {
 		var supported = ('Notification' in window);
 		var nativeNote = window.Notification;
@@ -648,7 +649,7 @@ angular.module('nirc')
 		return Notification;
 	});
 
-angular.module('nirc')
+angular.module('dnirc')
 	.factory('Socket', function($rootScope) {
 		var Socket = function(addr) {
 			this._socket = io.connect(addr);
@@ -668,7 +669,7 @@ angular.module('nirc')
 		return Socket;
 	});
 
-angular.module('nirc')
+angular.module('dnirc')
 	.factory('User', function() {
 		var User = function(nick) {
 			this.rename(nick);

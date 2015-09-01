@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="nirc" ng-controller="RootCtrl">
+<html ng-app="dnirc" ng-controller="RootCtrl">
 	<head>
 		<title>Designer Network</title>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
@@ -10,11 +10,11 @@
 		<link href='/stylesheets/style.css' media='screen' rel='stylesheet' type='text/css'/>
 		
 		<script src='/socket.io/socket.io.js'></script>
-		<script src='/javascripts/vendor/mousetrap.min.js'></script>
-		<script src='/javascripts/vendor/angular.min.js'></script>
-		<script src='/javascripts/vendor/angular-sanitize.min.js'></script>
-		<script src='/javascripts/vendor/lodash-custom.min.js'></script>
-		<script src='/javascripts/nirc.js'></script>
+		<script src='/javascripts/lib/mousetrap.min.js'></script>
+		<script src='/javascripts/lib/angular.min.js'></script>
+		<script src='/javascripts/lib/angular-sanitize.min.js'></script>
+		<script src='/javascripts/lib/lodash-custom.min.js'></script>
+		<script src='/javascripts/dnirc.js'></script>
 		<base href="/">
 	</head>
 	<body ng-controller="MainCtrl">
@@ -65,9 +65,33 @@
 		<div class="wrapper">
 			<!-- main content pane -->
 			<ul class="content" scroll-glue ng-class="userList ? 'users-shown' : 'users-hidden'">
-				<li ng-repeat="event in client.activeChannel.history" ng-class="{'mention' : event.mention, 'status-message' : event.status_message}">
+				<li ng-repeat="event in client.activeChannel.history" ng-class="{'mention' : event.mention, 'status-message' : event.status_message}" ng-attr-id="{{ event.id }}">
 					<span class="sender" ng-style="set_color(event.from.nick)">{{event.from.nick}}</span>
-					<span class="message" ng-style="is_action(event.message)" ng-bind-html="strip_codes(event.message) | linky:'_blank'"></span>
+					<span class="message" ng-if="event.embed == false" ng-style="is_action(event.message)" ng-bind-html="strip_codes(event.message) | linky:'_blank'"></span>
+					<span class="message" ng-if="event.embed != false" ng-style="is_action(event.message)">
+						<span ng-bind-html="strip_codes(event.message) | linky:'_blank'"></span>
+						<blockquote class="embed" ng-if="event.embed.type == 'link'">
+							<div class="thumb">
+								<a href="{{ event.embed.link }}" target="_blank">
+									<img src="{{ event.embed.thumb }}" alt="">
+								</a>
+							</div>
+							<div class="description">
+								<a href="{{ event.embed.link }}" target="_blank">
+									<h1>{{ event.embed.head }}</h1>
+									<p>{{ event.embed.body }}</p>
+								</a>
+							</div>
+						</blockquote>
+						<blockquote class="embed" ng-if="event.embed.type == 'image'">
+							<div class="description">
+							<a ng-click="imageEmbed = !imageEmbed">
+								<img src="{{ event.embed.link }}" ng-init="imageEmbed = false" class="image-embed" ng-show="imageEmbed">
+								<p>{{ event.embed.type }} / {{ event.embed.length }}</p>
+							</a>
+							</div>
+						</blockquote>
+					</span>
 					<span class="timestamp">{{event.timestamp | date:'HH:mm:ss'}}</span>
 				</li>
 			</ul>
