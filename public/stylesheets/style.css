@@ -6,7 +6,7 @@
 body {
   background-color: White;
   color: #2B303B;
-  font: normal 11pt/1.4 "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 11pt/21px "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
   overflow: hidden;
   padding: 0; }
@@ -20,15 +20,15 @@ textarea, input {
   outline: none; }
 
 a {
-  color: #455a64;
+  color: #4F5B66;
   text-decoration: underline;
   outline: none; }
   a:hover {
-    color: #263238;
+    color: #2B303B;
     text-decoration: none; }
 
 .overlay {
-  background-color: #0e0810;
+  background-color: #2B303B;
   color: White;
   position: absolute;
   top: 0;
@@ -124,6 +124,8 @@ a {
     line-height: 26px;
     padding: 18px 20px 17px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+    .sidebar header img {
+      display: none; }
   .sidebar h2 {
     font-weight: 500;
     padding: 0px 20px;
@@ -161,10 +163,9 @@ a {
     background-color: White;
     right: 0px;
     min-height: 62px;
-    border-bottom: 1px solid #eceff1; }
+    border-bottom: 1px solid #EFF1F5; }
     .content header .title {
       padding: 20px 120px 20px 20px;
-      line-height: 21px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -178,11 +179,17 @@ a {
         margin-right: 10px;
         font-weight: 600;
         color: #2B303B; }
+      .content header .title img {
+        display: none; }
     .content header .total-users {
       position: absolute;
       top: 20px;
-      right: 20px;
-      line-height: 21px; }
+      right: 20px; }
+  .content .status {
+    opacity: 0.75;
+    font-style: italic;
+    font-size: 10pt;
+    line-height: 19px; }
   .content .mention {
     background-color: #fff9c4; }
   .content .action {
@@ -196,21 +203,14 @@ a {
     white-space: nowrap;
     width: 140px;
     padding: 5px 10px;
-    line-height: 21px;
     flex-shrink: 0;
     -webkit-flex-shrink: 0; }
   .content .supplemental .sender {
     font-size: 0; }
   .content .message {
     padding: 5px 10px 5px 0;
-    line-height: 21px;
     flex-grow: 1;
     -webkit-flex-grow: 1; }
-  .content .status .message {
-    opacity: 0.75;
-    font-style: italic;
-    font-size: 10pt;
-    line-height: 19px; }
   .content .timestamp {
     opacity: 0;
     font-size: 9pt;
@@ -223,7 +223,7 @@ a {
     display: -webkit-flex;
     width: 100%;
     padding: 0;
-    border-top: 1px dotted #eceff1; }
+    border-top: 1px dotted #EFF1F5; }
     .content li:hover .timestamp {
       opacity: 0.4; }
     .content li:last-child {
@@ -247,7 +247,7 @@ a {
     -webkit-flex-shrink: 0;
     padding: 0 10px;
     line-height: 40px;
-    background-color: #eceff1;
+    background-color: #EFF1F5;
     width: 140px;
     text-align: right; }
   .input input[type="text"] {
@@ -271,9 +271,9 @@ blockquote {
   font-size: 12px;
   font-weight: bold;
   line-height: 6px;
-  color: #263238;
+  color: #2B303B;
   vertical-align: middle;
-  background-color: #eceff1;
+  background-color: #EFF1F5;
   cursor: pointer; }
 
 .image-embed {
@@ -288,11 +288,11 @@ blockquote {
   -webkit-flex-direction: row;
   width: -webkit-fit-content;
   width: -moz-fit-content;
-  box-shadow: 0 0 0 1px #eceff1;
+  box-shadow: 0 0 0 1px #EFF1F5;
   margin: 5px 0; }
   .embed a {
     text-decoration: none;
-    color: #263238; }
+    color: #2B303B; }
   .embed .thumb {
     line-height: 0; }
     .embed .thumb img {
@@ -303,10 +303,60 @@ blockquote {
     max-width: 450px; }
     .embed .description h1 {
       margin: 0 0 5px;
-      font-size: 10pt; }
+      font-size: 11pt;
+      font-weight: 600; }
     .embed .description p {
       margin: 0; }
 
+@media (max-width: 768px) {
+  body {
+    font-size: 10pt;
+    line-height: 19px; }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 5; }
+    .sidebar header {
+      padding: 8px 20px 8px 50px; }
+      .sidebar header img {
+        display: inline;
+        position: absolute;
+        top: 12px;
+        left: 20px; }
+
+  .sidebar.shown {
+    left: 0; }
+
+  .sidebar.hidden {
+    left: -240px; }
+
+  .content {
+    padding: 40px 0 0; }
+    .content header {
+      left: 0;
+      min-height: 42px; }
+      .content header .title {
+        padding: 12px 20px 11px 50px;
+        min-height: 42px; }
+        .content header .title img {
+          display: inline;
+          position: fixed;
+          top: 12px;
+          left: 20px;
+          z-index: 4; }
+      .content header .total-users {
+        display: none; }
+    .content .sender {
+      max-width: 100px; }
+    .content .timestamp {
+      display: none; }
+
+  .input {
+    left: 0; }
+    .input span {
+      width: auto; } }
 .user-1 {
   color: #e51c23; }
 

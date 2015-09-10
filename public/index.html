@@ -15,7 +15,6 @@
 		<script src='/js/lib/angular-sanitize.min.js'></script>
 		<script src='/js/lib/lodash-custom.min.js'></script>
 		<script src='/js/dnirc.js'></script>
-		<script src='/js/dnirc.logs.js'></script>
 		<base href="/">
 	</head>
 	<body ng-controller="MainCtrl">
@@ -41,8 +40,13 @@
 
 		<div class="wrapper">
 			<!-- sidebar --> 
-			<div class="sidebar" ng-class="userList ? 'users-shown' : 'users-hidden'">
-				<header>Designer Network</header>
+			<div class="sidebar" 
+				ng-class="sidebar ? 'shown' : 'hidden'"
+				ng-init="sidebar = false">
+				<header>
+					<img src="/images/close.svg" alt="Close" ng-click="sidebar = false">
+					Designer Network
+				</header>
 				<!-- channel list -->
 				<h2>Rooms</h2>
 				<ul class="channels" ng-controller="TabCtrl">
@@ -66,9 +70,10 @@
 				</div>
 			</div>
 			<!-- main content pane -->
-			<ul class="content" scroll-glue ng-class="userList ? 'users-shown' : 'users-hidden'">
+			<ul class="content" scroll-glue>
 				<header>
 					<div class="title">
+						<img src="/images/menu.svg" alt="Menu" ng-click="sidebar = true">
 						<strong>{{ client.activeChannel.name }}</strong>
 						<span ng-bind-html="client.activeChannel.topic | linky:'_blank'"></span>
 					</div>

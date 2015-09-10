@@ -1,3 +1,12 @@
+$base00: #2B303B;
+$base01: #343D46;
+$base02: #4F5B66;
+$base03: #65737E;
+$base04: #A7ADBA;
+$base05: #C0C5CE;
+$base06: #DFE1E8;
+$base07: #EFF1F5;
+
 * {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -6,8 +15,8 @@
 
 body {
 	background-color: White;
-	color: #2B303B;
-	font: normal 11pt/1.4 "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: $base00;
+	font: normal 11pt/21px "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	margin: 0;
 	overflow: hidden;
 	padding: 0;
@@ -24,17 +33,17 @@ textarea, input {
 }
 
 a {
-	color: #455a64;
+	color: $base02;
 	text-decoration: underline;
 	outline: none;
 	&:hover {
-		color: #263238;
+		color: $base00;
 		text-decoration: none;
 	}
 }
 
 .overlay {
-	background-color: #0e0810;
+	background-color: $base00;
 	color: White;
 	position: absolute;
 	top: 0;
@@ -143,13 +152,16 @@ a {
 	width: 240px;
 	flex-shrink: 0;
 	-webkit-flex-shrink: 0;
-	background-color: #2B303B;
+	background-color: $base00;
 	color: White;
 	header {
 		font-size: 14pt;
 		line-height: 26px;
 		padding: 18px 20px 17px;
 		border-bottom: 1px solid rgba(0,0,0,0.1);
+		img {
+			display: none;
+		}
 	}
 	h2 {
 		font-weight: 500;
@@ -172,7 +184,7 @@ a {
 	.close {
 		width: 20px;
 		text-align: center;
-		color: #A7ADBA;
+		color: $base04;
 	}
 	.active {
 		font-weight: 600;
@@ -194,32 +206,39 @@ a {
 		background-color: White;
 		right: 0px;
 		min-height: 62px;
-		border-bottom: 1px solid #eceff1;
+		border-bottom: 1px solid $base07;
 		.title {
 			padding: 20px 120px 20px 20px;
-			line-height: 21px;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			color: #4F5B66;
+			color: $base02;
 			&:hover {
 				white-space: normal;
-				color: #2B303B;
+				color: $base00;
 			}
 			strong {
 				text-transform: capitalize;
 				display: inline-block;
 				margin-right: 10px;
 				font-weight: 600;
-				color: #2B303B;
+				color: $base00;
+			}
+			img {
+				display: none;
 			}
 		}
 		.total-users {
 			position: absolute;
 			top: 20px;
 			right: 20px;
-			line-height: 21px;
 		}
+	}
+	.status {
+		opacity: 0.75;
+		font-style: italic;
+		font-size: 10pt;
+		line-height: 19px;
 	}
 	.mention {
 		background-color: #fff9c4;
@@ -236,7 +255,6 @@ a {
 		white-space: nowrap;
 		width: 140px;
 		padding: 5px 10px;
-		line-height: 21px;
 		flex-shrink: 0;
 		-webkit-flex-shrink: 0;
 	}
@@ -245,15 +263,8 @@ a {
 	}
 	.message {
 		padding: 5px 10px 5px 0;
-		line-height: 21px;
 		flex-grow: 1;
 		-webkit-flex-grow: 1;
-	}
-	.status .message {
-		opacity: 0.75;
-		font-style: italic;
-		font-size: 10pt;
-		line-height: 19px;
 	}
 	.timestamp {
 		opacity: 0;
@@ -268,7 +279,7 @@ a {
 		display: -webkit-flex;
 		width: 100%;
 		padding: 0;
-		border-top: 1px dotted #eceff1;
+		border-top: 1px dotted $base07;
 		&:hover .timestamp {
 			opacity: 0.4;
 		}
@@ -286,7 +297,7 @@ a {
 	bottom: 0;
 	left: 240px;
 	right: 0;
-	border-top: 1px solid #DFE1E8;
+	border-top: 1px solid $base06;
 	background-color: White;
 	display: flex;
 	display: -webkit-flex;
@@ -297,7 +308,7 @@ a {
 		-webkit-flex-shrink: 0;
 		padding: 0 10px;
 		line-height: 40px;
-		background-color: #eceff1;
+		background-color: $base07;
 		width: 140px;
 		text-align: right;
 	}
@@ -306,7 +317,7 @@ a {
 		-webkit-flex-grow: 1;
 		background-color: White;
 		border: none;
-		color: #2B303B;
+		color: $base00;
 		font: normal 11pt/40px "Proxima Nova", "Helvetica Neue", sans-serif;
 		padding: 0 10px;
 		margin: 0;
@@ -326,9 +337,9 @@ blockquote {
 	font-size: 12px;
 	font-weight: bold;
 	line-height: 6px;
-	color: #263238;
+	color: $base00;
 	vertical-align: middle;
-	background-color: #eceff1;
+	background-color: $base07;
 	cursor: pointer;
 }
 
@@ -345,11 +356,11 @@ blockquote {
 	-webkit-flex-direction: row;
 	width: -webkit-fit-content;
 	width: -moz-fit-content;
-	box-shadow: 0 0 0 1px #eceff1;
+	box-shadow: 0 0 0 1px $base07;
 	margin: 5px 0;
 	a {
 		text-decoration: none;
-		color: #263238;
+		color: $base00;
 	}
 	.thumb {
 		line-height: 0;
@@ -363,10 +374,72 @@ blockquote {
 		max-width: 450px;
 		h1 {
 			margin: 0 0 5px;
-			font-size: 10pt;
+			font-size: 11pt;
+			font-weight: 600;
 		}
 		p {
 			margin: 0;
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	body {
+		font-size: 10pt;
+		line-height: 19px;
+	}
+	.sidebar {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		z-index: 5;
+		header {
+			padding: 8px 20px 8px 50px;
+			img {
+				display: inline;
+					position: absolute;
+					top: 12px;
+					left: 20px;
+			}
+		}
+	}
+	.sidebar.shown {
+		left: 0;
+	}
+	.sidebar.hidden {
+		left: -240px;
+	}
+	.content {
+		padding: 40px 0 0;
+		header {
+			left: 0;
+			min-height: 42px;
+			.title {
+				padding: 12px 20px 11px 50px;
+				min-height: 42px;
+				img {
+					display: inline;
+					position: fixed;
+					top: 12px;
+					left: 20px;
+					z-index: 4;
+				}
+			}
+			.total-users {
+				display: none;
+			}
+		}
+		.sender {
+			max-width: 100px;
+		}
+		.timestamp {
+			display: none;
+		}
+	}
+	.input {
+		left: 0;
+		span {
+			width: auto;
 		}
 	}
 }

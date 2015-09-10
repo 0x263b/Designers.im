@@ -403,13 +403,7 @@ angular.module('dnirc')
 		});
 
 		socket.on('disconnect', function() {
-			var event = new ChatEvent(
-				new User(""),
-				new User("#DN"),
-				"You have been disconnect from the server."
-			);
 			is_connected = false;
-			Client.addEvent(event);
 		});
 
 		return Client;
