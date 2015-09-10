@@ -321,7 +321,11 @@ a {
 		font: normal 11pt/40px "Proxima Nova", "Helvetica Neue", sans-serif;
 		padding: 0 10px;
 		margin: 0;
+		&.disconnected {
+			background-color: #fdd;
+		}
 	}
+
 }
 
 
@@ -440,6 +444,14 @@ blockquote {
 		left: 0;
 		span {
 			width: auto;
+		}
+	}
+	.embed {
+		.thumb {
+			img {
+				max-width: 100px;
+				max-height: 100px;
+			}
 		}
 	}
 }

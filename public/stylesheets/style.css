@@ -259,6 +259,8 @@ a {
     font: normal 11pt/40px "Proxima Nova", "Helvetica Neue", sans-serif;
     padding: 0 10px;
     margin: 0; }
+    .input input[type="text"].disconnected {
+      background-color: #fdd; }
 
 blockquote {
   margin: 0;
@@ -356,7 +358,11 @@ blockquote {
   .input {
     left: 0; }
     .input span {
-      width: auto; } }
+      width: auto; }
+
+  .embed .thumb img {
+    max-width: 100px;
+    max-height: 100px; } }
 .user-1 {
   color: #e51c23; }
 

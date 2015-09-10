@@ -114,7 +114,10 @@
 
 		<div class="input">
 			<span>{{ client.me.nick }}</span>
-			<input type="text" placeholder="Express yourself" read-line="client.say(text)"
+			<input type="text" 
+				ng-class="{'disconnected': client.disconnected}"
+				placeholder="{{ !client.disconnected ? 'Express yourself' : 'Youʼve been disconnected' }}" 
+				read-line="client.say(text)"
 				complete-from="client.activeChannel.users">
 		</div>
 		

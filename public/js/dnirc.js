@@ -403,6 +403,7 @@ angular.module('dnirc')
 		});
 
 		socket.on('disconnect', function() {
+			Client.disconnected = true;
 			is_connected = false;
 		});
 
