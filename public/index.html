@@ -75,13 +75,6 @@
 					<div ng-if="client.activeChannel.users.length > 0" class="total-users">
 						{{ client.activeChannel.users.length }} members</div>
 				</header>
-				<span ng-controller="LogCtrl" ng-if="client.activeChannel.name == '#DN'">
-				<li ng-repeat="log in logs">
-					<span class="sender">{{log.sender}}</span>
-					<span class="message" ng-bind-html="log.message | linky:'_blank'">{{log.message}}</span>
-					<span class="timestamp"></span>
-				</li>
-				</span>
 				<li ng-repeat="event in client.activeChannel.history" ng-class="{'mention' : event.mention, 'status' : event.status_message, 'supplemental' : event.supplemental}">
 					<div class="sender" ng-class="set_color(event.from.nick)">{{event.from.nick}}</div>
 					<div class="message">
