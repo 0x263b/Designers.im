@@ -87,34 +87,14 @@ angular.module('dnirc', ['ngSanitize'])
 				sum = ((sum << 5) - sum) + char;
 				sum = sum & sum;
 			}
-			sum = ((sum % colours.length) + colours.length) % colours.length;
+			sum = ((sum % 16) + 16) % 16;
 
-			return {
-				color: colours[sum]
-			}
-		}
-
-		$scope.is_action = function(string) {
-			var re = /^([\u0001]ACTION\s){1}/.test(string);
-			if (re === true) {
-				return {
-					'font-style': 'italic'
-				}
-			}
-		}
-
-		$scope.strip_codes = function(string) {
-			var re = /^([\u0001]ACTION\s)?/;
-			if (re.test(string) === true) {
-				return string.replace(re, "");
-			}
+			return "user-" + sum;
 		}
 
 	})
 
 	.controller('TabCtrl', function($scope) {
-		$scope.expanded = true;
-
 		$scope.iconFor = function(ch) {
 			return ch.activity && !$scope.isActive(ch) ? 'activity' : '';
 		};
@@ -125,10 +105,6 @@ angular.module('dnirc', ['ngSanitize'])
 
 		$scope.setActive = function(ch) {
 			return $scope.client.setActive(ch);
-		};
-
-		$scope.toggleExpand = function() {
-			$scope.expanded = !$scope.expanded;
 		};
 
 		$scope.closeTab = function(ch) {
@@ -173,6 +149,11 @@ angular.module('dnirc')
 		Channel.MAX_HISTORY = 500;
 
 		Channel.prototype.addEvent = function(event) {
+			if (typeof this.history.last() !== 'undefined'
+				&& event.from.nick === this.history.last().from.nick
+				&& event.to.nick === this.history.last().to.nick) {
+				event.supplemental = true;
+			}
 			this.history.push(event);
 			this.activity = true;
 
@@ -190,9 +171,10 @@ angular.module('dnirc')
 
 angular.module('dnirc')
 	.factory('ChatEvent', function() {
-		var ChatEvent = function(from, to, text, embed) {
+		var ChatEvent = function(from, to, action, text, embed) {
 			this.from = from;
 			this.to = to;
+			this.action = action;
 			this.message = text;
 			this.embed = embed || false;
 			this.timestamp = new Date();
@@ -225,14 +207,14 @@ angular.module('dnirc')
 
 				if (text.charAt(0) != '/') {
 					/* add our own text to the channel. */
-					ch.addEvent(new ChatEvent(this.me, new User(ch.name), text));
+					ch.addEvent(new ChatEvent(this.me, new User(ch.name), false, text));
 					text = '/msg ' + ch.name + ' ' + text;
 				}
 
 				if (text.substr(0, 3) == '/me') {
 					text = text.substr(3);
+					ch.addEvent(new ChatEvent(this.me, new User(ch.name), true, text));
 					text = "\u0001ACTION " + text + "\u0001";
-					ch.addEvent(new ChatEvent(this.me, new User(ch.name), text));
 					text = '/msg ' + ch.name + ' ' + text;
 				}
 
@@ -362,6 +344,7 @@ angular.module('dnirc')
 			var event = new ChatEvent(
 				new User(d.from || ''),
 				new User(d.receiver),
+				d.action,
 				d.message,
 				d.embed
 			);
@@ -409,6 +392,13 @@ angular.module('dnirc')
 				ch.users = _.reject(ch.users, function(u) {
 					return u.nick == d.nick;
 				});
+			}
+		});
+
+		socket.on('rpl_topic', function(d) {
+			var ch;
+			if ( (ch = Client.channel(d.channel)) ) {
+				ch.topic = d.topic;
 			}
 		});
 
@@ -537,7 +527,7 @@ angular.module('dnirc')
 
 							});
 							break;
-						/*case 38:
+						case 38:
 							// up
 							element.val(suggestHistory(-1));
 							event.preventDefault();
@@ -546,7 +536,7 @@ angular.module('dnirc')
 							// down
 							element.val(suggestHistory(1));
 							event.preventDefault();
-							break; */
+							break;
 					}
 				});
 			}
@@ -712,7 +702,7 @@ angular.module('dnirc')
 window.onbeforeunload = function(e) {
 	e = e || window.event;
 
-	if (is_connected == true) {
+	if (is_connected) {
 		if (e) {
 			e.returnValue = 'Closing this window will disconnect you from the chat';
 		}

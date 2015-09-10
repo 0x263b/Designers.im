@@ -10,11 +10,12 @@
 		<link href='/stylesheets/style.css' media='screen' rel='stylesheet' type='text/css'/>
 		
 		<script src='/socket.io/socket.io.js'></script>
-		<script src='/javascripts/lib/mousetrap.min.js'></script>
-		<script src='/javascripts/lib/angular.min.js'></script>
-		<script src='/javascripts/lib/angular-sanitize.min.js'></script>
-		<script src='/javascripts/lib/lodash-custom.min.js'></script>
-		<script src='/javascripts/dnirc.js'></script>
+		<script src='/js/lib/mousetrap.min.js'></script>
+		<script src='/js/lib/angular.min.js'></script>
+		<script src='/js/lib/angular-sanitize.min.js'></script>
+		<script src='/js/lib/lodash-custom.min.js'></script>
+		<script src='/js/dnirc.js'></script>
+		<script src='/js/dnirc.logs.js'></script>
 		<base href="/">
 	</head>
 	<body ng-controller="MainCtrl">
@@ -29,8 +30,7 @@
 				<form ng-submit="connect()" name="configForm" novalidate>
 					<div class="control-group">
 						<label for="nick">Nickname:</label>
-						<input type="text" name="nick" id="nick"
-									 ng-model="config.nickname" required>
+						<input type="text" name="nick" id="nick" ng-model="config.nickname" required>
 					</div>
 					<div class="control-group">
 						<input type="submit" value="Connect" ng-disabled="configForm.$invalid">
@@ -39,35 +39,54 @@
 			</div>
 		</div>
 
-
-		<header>
-			<div>
-				<ul class="tabbar" ng-controller="TabCtrl">
-					<li ng-class="{active: isActive(client.statusChannel)}" ng-show="expanded || isActive(client.statusChannel)" class="channel-tab">
-						<a href ng-click="setActive(client.statusChannel)" ng-class="iconFor(client.statusChannel)" class="channel">Status</a>
+		<div class="wrapper">
+			<!-- sidebar --> 
+			<div class="sidebar" ng-class="userList ? 'users-shown' : 'users-hidden'">
+				<header>Designer Network</header>
+				<!-- channel list -->
+				<h2>Rooms</h2>
+				<ul class="channels" ng-controller="TabCtrl">
+					<li ng-class="{active: isActive(client.statusChannel)}" class="channel-tab">
+						<a class="close">○</a>
+						<a href ng-click="setActive(client.statusChannel)" class="channel">Status</a>
 					</li>
-					<li ng-repeat="channel in client.channels" ng-class="{active: isActive(channel)}" class="channel-tab" ng-show="expanded || isActive(channel)">
-						<a href ng-click="setActive(channel)" ng-class="iconFor(channel)" class="channel">{{channel.name}}</a>
-						<a href ng-click="closeTab(channel)" class="close">✕</a>
+					<li ng-repeat="channel in client.channels" class="channel-tab">
+						<a href ng-click="closeTab(channel)" class="close" title="Leave this room">✕</a>
+						<a href ng-click="setActive(channel)" class="channel" ng-class="{active: isActive(channel)}">{{channel.name}}</a>
 					</li>
 				</ul>
+				<!-- user list -->
+				<div ng-if="client.activeChannel.users.length > 0">
+				<h2>Users</h2>
+				<ul ng-controller="UserCtrl" >
+					<li ng-repeat="user in client.activeChannel.users">
+						<a ng-click="messageTo(user)" href>{{user.nick}}</a>
+					</li>
+				</ul>
+				</div>
 			</div>
-			<div>
-				<a href ng-click="userList = !userList" class="users-toggle">
-					<img src="/images/users.svg" alt="User list">
-				</a>
-			</div>
-		</header>
-
-		<div class="wrapper">
 			<!-- main content pane -->
 			<ul class="content" scroll-glue ng-class="userList ? 'users-shown' : 'users-hidden'">
-				<li ng-repeat="event in client.activeChannel.history" ng-class="{'mention' : event.mention, 'status-message' : event.status_message}" ng-attr-id="{{ event.id }}">
-					<span class="sender" ng-style="set_color(event.from.nick)">{{event.from.nick}}</span>
-					<span class="message" ng-if="event.embed == false" ng-style="is_action(event.message)" ng-bind-html="strip_codes(event.message) | linky:'_blank'"></span>
-					<span class="message" ng-if="event.embed != false" ng-style="is_action(event.message)">
-						<span ng-bind-html="strip_codes(event.message) | linky:'_blank'"></span>
-						<blockquote class="embed" ng-if="event.embed.type == 'link'">
+				<header>
+					<div class="title">
+						<strong>{{ client.activeChannel.name }}</strong>
+						<span ng-bind-html="client.activeChannel.topic | linky:'_blank'"></span>
+					</div>
+					<div ng-if="client.activeChannel.users.length > 0" class="total-users">
+						{{ client.activeChannel.users.length }} members</div>
+				</header>
+				<span ng-controller="LogCtrl" ng-if="client.activeChannel.name == '#DN'">
+				<li ng-repeat="log in logs">
+					<span class="sender">{{log.sender}}</span>
+					<span class="message" ng-bind-html="log.message | linky:'_blank'">{{log.message}}</span>
+					<span class="timestamp"></span>
+				</li>
+				</span>
+				<li ng-repeat="event in client.activeChannel.history" ng-class="{'mention' : event.mention, 'status' : event.status_message, 'supplemental' : event.supplemental}">
+					<div class="sender" ng-class="set_color(event.from.nick)">{{event.from.nick}}</div>
+					<div class="message">
+						<div ng-class="{'action' : event.action}" ng-bind-html="event.message | linky:'_blank'"></div>
+						<blockquote class="embed" ng-if="event.embed && event.embed.type == 'link'">
 							<div class="thumb">
 								<a href="{{ event.embed.link }}" target="_blank">
 									<img src="{{ event.embed.thumb }}" alt="">
@@ -80,30 +99,26 @@
 								</a>
 							</div>
 						</blockquote>
-						<blockquote class="embed" ng-if="event.embed.type == 'image'">
-							<div class="description">
+						
+						<blockquote ng-if="event.embed && event.embed.type == 'image'">
 							<a ng-click="imageEmbed = !imageEmbed">
-								<img src="{{ event.embed.link }}" ng-init="imageEmbed = false" class="image-embed" ng-show="imageEmbed">
-								<p>{{ event.embed.type }} / {{ event.embed.length }}</p>
+								<span class="expander" title="{{ event.embed.type }}, {{ event.embed.length }}">…</span>
+								<div ng-init="imageEmbed = false" ng-show="imageEmbed">
+								<img src="{{ event.embed.link }}" class="image-embed">
+								</div>
 							</a>
-							</div>
 						</blockquote>
-					</span>
-					<span class="timestamp">{{event.timestamp | date:'HH:mm:ss'}}</span>
+					</div>
+					<div class="timestamp">{{event.timestamp | date:'HH:mm:ss'}}</div>
 				</li>
-			</ul>
-			<!-- user list -->
-			
-			<div class="users" ng-class="userList ? 'users-shown' : 'users-hidden'">
-				<ul ng-controller="UserCtrl" >
-					<li ng-repeat="user in client.activeChannel.users">
-						<a ng-click="messageTo(user)" href>{{user.nick}}</a>
-					</li>
-				</ul>
-			</div>
+			</ul>			
 		</div>
 
-		<input type="text" class="user-input" ng-class="userList ? 'users-shown' : 'users-hidden'" placeholder="Type a message here" read-line="client.say(text)"
+		<div class="input">
+			<span>{{ client.me.nick }}</span>
+			<input type="text" placeholder="Express yourself" read-line="client.say(text)"
 				complete-from="client.activeChannel.users">
+		</div>
+		
 	</body>
 </html>
