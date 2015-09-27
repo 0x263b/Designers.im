@@ -2,11 +2,11 @@ var has_focus = true;
 var is_connected = false;
 
 window.onblur = function() {
-	has_focus = false;
+has_focus = false;
 }
 window.onfocus = function() {
-	has_focus = true;
-	changeFavicon("/images/favicon.png");
+has_focus = true;
+changeFavicon("/images/favicon.png");
 }
 
 document.head || (document.head = document.getElementsByTagName('head')[0]);
@@ -35,7 +35,7 @@ angular.module('dnirc', ['ngSanitize'])
 	})
 	.controller('RootCtrl', function($scope, $location) {})
 
-	.controller('MainCtrl', function($scope, Client, Mousetrap, Notification, Config) {
+	.controller('MainCtrl', function($scope, Client, Notification, Config) {
 		$scope.client = Client;
 		$scope.config = Config;
 		$scope.userList = true;
@@ -44,16 +44,6 @@ angular.module('dnirc', ['ngSanitize'])
 			$scope.config.save();
 			$scope.client.connect($scope.config);
 		};
-
-		Mousetrap.bind('command+left', function(e) {
-			e.preventDefault();
-			Client.previousChannel();
-		});
-
-		Mousetrap.bind('command+right', function(e) {
-			e.preventDefault();
-			Client.nextChannel();
-		});
 
 		$scope.$on('mention', function(ev, mention) {
 			if (has_focus == false) {
@@ -140,7 +130,11 @@ angular.module('dnirc')
 			this.name = name;
 			this.mode = opts.mode;
 			this.topic = opts.topic;
-			this.history = [];
+			if (name !== 'status') {
+				this.history = JSON.parse(localStorage.getItem("dnirc:" + this.name + ":history") || '[]');
+			} else {
+				this.history = [];
+			}
 			this.users = [];
 
 			this.activity = false;
@@ -150,8 +144,8 @@ angular.module('dnirc')
 
 		Channel.prototype.addEvent = function(event) {
 			if (typeof this.history.last() !== 'undefined'
-				&& event.from.nick === this.history.last().from.nick
-				&& event.to.nick === this.history.last().to.nick) {
+					&& event.from.nick === this.history.last().from.nick
+					&& event.to.nick === this.history.last().to.nick) {
 				event.supplemental = true;
 			}
 			this.history.push(event);
@@ -159,6 +153,10 @@ angular.module('dnirc')
 
 			while (this.history.length > Channel.MAX_HISTORY) {
 				this.history.shift();
+			}
+
+			if (this.name !== 'status') {
+				localStorage.setItem("dnirc:" + this.name + ":history", JSON.stringify(this.history));
 			}
 		};
 
@@ -184,19 +182,15 @@ angular.module('dnirc')
 	});
 
 angular.module('dnirc')
-	.factory('Client', function($rootScope, Channel, User, ChatEvent, Socket) {
+	.factory('Client', function($rootScope, $http, Channel, User, ChatEvent, Socket) {
 		var socket = new Socket(null);
 
 		var Client = {
-			connected: false, /* are we currently connected? */
-			channels: [], /* list of channels we're in. */
-			statusChannel: new Channel('status'), /* psuedo-channel for displaying
-												 * content that doesn't belong in a
-												 * regular channel */
-			activeChannel: null, /* the currently selected channel */
-			me: new User(''), /* our user information. */
-
-			/* -- public interface below -- */
+			connected: false,
+			channels: [],
+			statusChannel: new Channel('status'),
+			activeChannel: null,
+			me: new User(''), // our user information.
 
 			say: function(text) {
 				var ch = this.activeChannel;
@@ -206,16 +200,40 @@ angular.module('dnirc')
 				}
 
 				if (text.charAt(0) != '/') {
-					/* add our own text to the channel. */
-					ch.addEvent(new ChatEvent(this.me, new User(ch.name), false, text));
+					var links = [];
+					var split = text.split(" ");
+					split.forEach(function(w) {
+						// ignore localhost links
+						if (w.match(/^(http|https):\/\/localhost/g)) {
+							return;
+						}
+						var match = w.indexOf("http://") === 0 || w.indexOf("https://") === 0;
+						if (match) {
+							links.push(w);
+						}
+					});
+
+					var that = this;
+					if (links.length === 0) {
+						// add our own text to the channel.
+						ch.addEvent(new ChatEvent(that.me, new User(ch.name), false, text));
+					} else {
+						$http.get('/og/?url=' + links[0]).
+							success(function(data) {
+								ch.addEvent(new ChatEvent(that.me, new User(ch.name), false, text, data));
+							}).
+							error(function(data) {
+								ch.addEvent(new ChatEvent(that.me, new User(ch.name), false, text));
+							});
+					}
+					// Send message to server
 					text = '/msg ' + ch.name + ' ' + text;
 				}
 
 				if (text.substr(0, 3) == '/me') {
 					text = text.substr(3);
 					ch.addEvent(new ChatEvent(this.me, new User(ch.name), true, text));
-					text = "\u0001ACTION " + text + "\u0001";
-					text = '/msg ' + ch.name + ' ' + text;
+					text = '/me ' + ch.name + ' ' + text;
 				}
 
 				socket.emit('command', text);
@@ -237,57 +255,56 @@ angular.module('dnirc')
 				this.activeChannel = this.statusChannel;
 			},
 
-			/* set the active channel to the provided channel object. */
 			setActive: function(channel) {
 				this.activeChannel.activity = false;
 				this.activeChannel = channel;
 				this.activeChannel.activity = false;
 			},
 
-			/* move back one channel */
+			// move back one channel 
 			previousChannel: function() {
 				if (!this.channels.length) {
 					return;
 				}
 				var index = _.indexOf(this.channels, this.activeChannel);
 				switch (index) {
-					case -1:
-						this.setActive(_.last(this.channels));
-						break;
-					case 0:
-						this.setActive(this.statusChannel);
-						break;
-					default:
-						this.setActive(this.channels[index - 1]);
-						break;
+				case -1:
+					this.setActive(_.last(this.channels));
+					break;
+				case 0:
+					this.setActive(this.statusChannel);
+					break;
+				default:
+					this.setActive(this.channels[index - 1]);
+					break;
 				}
 			},
 
-			/* move forward one channel */
+			// move forward one channel
 			nextChannel: function() {
 				if (!this.channels.length) {
 					return;
 				}
 				var index = _.indexOf(this.channels, this.activeChannel);
 				switch (index) {
-					case -1:
-						this.setActive(this.channels[0]);
-						break;
-					case this.channels.length - 1:
-						this.setActive(this.statusChannel);
-						break;
-					default:
-						this.setActive(this.channels[index + 1]);
-						break;
+				case -1:
+					this.setActive(this.channels[0]);
+					break;
+				case this.channels.length - 1:
+					this.setActive(this.statusChannel);
+					break;
+				default:
+					this.setActive(this.channels[index + 1]);
+					break;
 				}
 			},
 
-			/* leave a channel */
+			// leave a channel 
 			part: function(channel) {
 				this.say("/part " + channel.name);
 			},
 
-			/* remove channel from Client.channels */
+			// remove channel from Client.channels 
 			removeChannel: function(channelName) {
 				if (channelName == this.activeChannel.name) {
 					this.previousChannel();
@@ -419,8 +436,8 @@ angular.module('dnirc')
 		var config = {
 			nickname: search.nick || randomnick,
 			userName: search.nick || randomnick,
-			load: function() {}, /* nop */
-			save: function() {} /* nop */
+			load: function() {},
+			save: function() {}
 		};
 
 		if ('localStorage' in window) {
@@ -449,6 +466,7 @@ angular.module('dnirc')
 
 		return config;
 	});
+
 
 angular.module('dnirc')
 	.directive('readLine', function() {
@@ -495,43 +513,48 @@ angular.module('dnirc')
 				}
 
 
-				element.bind("keydown keypress", function(event) {
+				element.bind("keydown", function(event) {
 					switch (event.which) {
-						case 9:
-							// tab
-							var orig = element.val();
-							if ( (complete = suggestComplete(orig)) ) {
-								var update = orig.split(" ");
-								update[update.length - 1] = complete;
-								update = update.join(" ");
-								element.val(update);
-								element[0].setSelectionRange(orig.length, update.length);
-							}
-							event.preventDefault();
-							break;
-						case 13:
-							// enter
-							scope.$apply(function() {
-								var text = element.val();
-								element.val('');
-								scope.readLine({
-									text: text
-								});
-								addHistory(text);
-								event.preventDefault();
+					case 9:
+						// tab
+						event.preventDefault();
+						var orig = element.val();
+						if ( (complete = suggestComplete(orig)) ) {
+							var update = orig.split(" ");
+							update[update.length - 1] = complete;
+							update = update.join(" ");
+							element.val(update);
+							element[0].setSelectionRange(orig.length, update.length);
+						}
 
+						break;
+
+					case 13:
+						// enter
+						event.preventDefault();
+						scope.$apply(function() {
+							var text = element.val();
+							element.val('');
+							scope.readLine({
+								text: text
 							});
-							break;
-						case 38:
-							// up
-							element.val(suggestHistory(-1));
-							event.preventDefault();
-							break;
-						case 40:
-							// down
-							element.val(suggestHistory(1));
-							event.preventDefault();
-							break;
+							addHistory(text);
+
+
+						});
+						break;
+					case 38:
+						// up
+						event.preventDefault();
+						element.val(suggestHistory(-1));
+
+						break;
+					case 40:
+						// down
+						event.preventDefault();
+						element.val(suggestHistory(1));
+
+						break;
 					}
 				});
 			}
@@ -557,19 +580,6 @@ angular.module('dnirc')
 						/* stick to the bottom */
 						elem.scrollTop = elem.scrollHeight;
 					}
-				});
-			}
-		};
-	});
-
-angular.module('dnirc')
-	.factory('Mousetrap', function($rootScope) {
-		return {
-			bind: function(expression, callback) {
-				Mousetrap.bind(expression, function(e) {
-					var r = callback(e);
-					$rootScope.$apply();
-					return r;
 				});
 			}
 		};
@@ -695,12 +705,12 @@ angular.module('dnirc')
 	});
 
 window.onbeforeunload = function(e) {
-	e = e || window.event;
+e = e || window.event;
 
-	if (is_connected) {
-		if (e) {
-			e.returnValue = 'Closing this window will disconnect you from the chat';
-		}
-		return 'Closing this window will disconnect you from the chat';
+if (is_connected) {
+	if (e) {
+		e.returnValue = 'Closing this window will disconnect you from the chat';
 	}
+	return 'Closing this window will disconnect you from the chat';
+}
 };

@@ -10,7 +10,6 @@
 		<link href='/stylesheets/style.css' media='screen' rel='stylesheet' type='text/css'/>
 		
 		<script src='/socket.io/socket.io.js'></script>
-		<script src='/js/lib/mousetrap.min.js'></script>
 		<script src='/js/lib/angular.min.js'></script>
 		<script src='/js/lib/angular-sanitize.min.js'></script>
 		<script src='/js/lib/lodash-custom.min.js'></script>
@@ -80,7 +79,7 @@
 					<div ng-if="client.activeChannel.users.length > 0" class="total-users">
 						{{ client.activeChannel.users.length }} members</div>
 				</header>
-				<li ng-repeat="event in client.activeChannel.history" ng-class="{'mention' : event.mention, 'status' : event.status_message, 'supplemental' : event.supplemental}">
+				<li ng-repeat="event in client.activeChannel.history track by $index" ng-class="{'mention' : event.mention, 'status' : event.status_message, 'supplemental' : event.supplemental}">
 					<div class="sender" ng-class="set_color(event.from.nick)">{{event.from.nick}}</div>
 					<div class="message">
 						<div ng-class="{'action' : event.action}" ng-bind-html="event.message | linky:'_blank'"></div>
