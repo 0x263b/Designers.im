@@ -77,7 +77,7 @@ a {
   .config input[type=text].ng-invalid {
     background-color: #fdd; }
   .config input[type=submit] {
-    background-color: #000;
+    background-color: Black;
     border: none;
     border-radius: 2px;
     color: White;
@@ -191,7 +191,7 @@ a {
     font-size: 10pt;
     line-height: 19px; }
   .content .mention {
-    background-color: #fff9c4; }
+    background-color: #FFF9C4; }
   .content .action {
     font-style: italic; }
   .content .sender {
@@ -260,7 +260,7 @@ a {
     padding: 0 10px;
     margin: 0; }
     .input input[type="text"].disconnected {
-      background-color: #fdd; }
+      background-color: #ffdddd; }
 
 blockquote {
   margin: 0;
@@ -288,8 +288,7 @@ blockquote {
   display: -webkit-flex;
   flex-direction: row;
   -webkit-flex-direction: row;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
+  max-width: 500px;
   box-shadow: 0 0 0 1px #EFF1F5;
   margin: 5px 0; }
   .embed a {
@@ -301,8 +300,7 @@ blockquote {
       max-width: 150px;
       max-height: 100px; }
   .embed .description {
-    padding: 10px 15px;
-    max-width: 450px; }
+    padding: 10px 15px; }
     .embed .description h1 {
       margin: 0 0 5px;
       font-size: 11pt;

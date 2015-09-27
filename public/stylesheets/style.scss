@@ -1,3 +1,5 @@
+// https://chriskempson.github.io/base16/#ocean
+
 $base00: #2B303B;
 $base01: #343D46;
 $base02: #4F5B66;
@@ -6,6 +8,14 @@ $base04: #A7ADBA;
 $base05: #C0C5CE;
 $base06: #DFE1E8;
 $base07: #EFF1F5;
+$base08: #bf616a;
+$base09: #d08770;
+$base0A: #FFF9C4;
+$base0B: #a3be8c;
+$base0C: #96b5b4;
+$base0D: #8fa1b3;
+$base0E: #ffdddd;
+$base0F: #ab7967;
 
 * {
 	-webkit-box-sizing: border-box;
@@ -103,7 +113,7 @@ a {
 			background-color: #fdd;
 		}
 		&[type=submit] {
-			background-color: #000;
+			background-color: Black;
 			border: none;
 			border-radius: 2px;
 			color: White;
@@ -241,7 +251,7 @@ a {
 		line-height: 19px;
 	}
 	.mention {
-		background-color: #fff9c4;
+		background-color: $base0A;
 	}
 	.action {
 		font-style: italic;
@@ -322,7 +332,7 @@ a {
 		padding: 0 10px;
 		margin: 0;
 		&.disconnected {
-			background-color: #fdd;
+			background-color: $base0E;
 		}
 	}
 
@@ -358,8 +368,7 @@ blockquote {
 	display: -webkit-flex;
 	flex-direction: row;
 	-webkit-flex-direction: row;
-	width: -webkit-fit-content;
-	width: -moz-fit-content;
+	max-width: 500px;
 	box-shadow: 0 0 0 1px $base07;
 	margin: 5px 0;
 	a {
@@ -375,7 +384,6 @@ blockquote {
 	}
 	.description {
 		padding: 10px 15px;
-		max-width: 450px;
 		h1 {
 			margin: 0 0 5px;
 			font-size: 11pt;
