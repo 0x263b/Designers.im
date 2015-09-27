@@ -194,6 +194,7 @@ angular.module('dnirc')
 
 			say: function(text) {
 				var ch = this.activeChannel;
+				var send = text;
 
 				if (!text || !text.length) {
 					return;
@@ -227,16 +228,16 @@ angular.module('dnirc')
 							});
 					}
 					// Send message to server
-					text = '/msg ' + ch.name + ' ' + text;
+					send = '/msg ' + ch.name + ' ' + text;
 				}
 
 				if (text.substr(0, 3) == '/me') {
 					text = text.substr(3);
 					ch.addEvent(new ChatEvent(this.me, new User(ch.name), true, text));
-					text = '/me ' + ch.name + ' ' + text;
+					send = '/me ' + ch.name + ' ' + text;
 				}
 
-				socket.emit('command', text);
+				socket.emit('command', send);
 			},
 
 			connect: function(options) {
