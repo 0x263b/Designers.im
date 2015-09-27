@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": "0.12.x"
+    "node": "4.x"
   },
   "main": "server.js",
   "scripts": {
