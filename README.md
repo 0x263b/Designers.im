@@ -4,7 +4,7 @@ Web IRC client, built with Node.js
 
 Demo → [http://designers.im/](http://designers.im/)
 
-[![Screenshot](https://i.imgur.com/Dyn7Esl.png)](https://i.imgur.com/Dyn7Esl.png)
+[![Screenshot](https://i.imgur.com/eAn2Bol.png)](https://i.imgur.com/eAn2Bol.png)
 
 
 ### Motivation
