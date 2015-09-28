@@ -1,7 +1,7 @@
 {
   "name": "designers.im",
   "description": "Simple browser based IRC client for #DN on freenode – designers.im",
-  "version": "0.0.1a",
+  "version": "0.1.0 Beta",
   "author": "Abram Kash",
   "repository": {
     "type": "git",
