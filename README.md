@@ -33,12 +33,15 @@ Freenode’s #DN is a channel for software designers. Unfortunately, most design
 #### Libraries in use
 * [Angular.js + Angular Sanitize](https://angularjs.org/)
 * [lodash](https://lodash.com/)
+* [IRC.js](https://github.com/gf3/IRC-js)
 * [Express.js](http://expressjs.com/)
 * [Socket.io](http://socket.io/)
 * [Cheerio](https://cheeriojs.github.io/cheerio/)
 * [Request](https://github.com/request/request)
 * [EventStream](https://github.com/dominictarr/event-stream)
 * [Sass](http://sass-lang.com/)
+
+[Icon](public/icon-128.png) by [Marian Mraz](https://dribbble.com/shots/2163351-Textual-replacement-icon)
 
 ### License
 
