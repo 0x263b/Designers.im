@@ -7,9 +7,9 @@ Demo → [http://designers.im/](http://designers.im/)
 [![Screenshot](https://i.imgur.com/Dyn7Esl.png)](https://i.imgur.com/Dyn7Esl.png)
 
 
-### About
+### Motivation
 
-Freenode’s #DN is a channel for software designers. Unfortunately, most designers find all the effort in setting up and using IRC off putting. Ideally they could just click one button to get chatting.
+Freenode’s #DN is a channel for software designers. Unfortunately, most designers find all the effort in setting up and using IRC off putting. Ideally there would be a client that requires them to simply click **one button** to get chatting. Bonus points if it looks good.
 
 
 ### Deploying
