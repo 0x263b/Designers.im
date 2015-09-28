@@ -17,6 +17,32 @@ $base0D: #8fa1b3;
 $base0E: #ffdddd;
 $base0F: #ab7967;
 
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 300;
+	src: local('Source Sans Pro Light'), local('SourceSansPro-Light'), url(https://fonts.gstatic.com/s/sourcesanspro/v9/toadOcfmlt9b38dHJxOBGCP2LEk6lMzYsRqr3dHFImA.woff2) format('woff2');
+}
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Source Sans Pro'), local('SourceSansPro-Regular'), url(https://fonts.gstatic.com/s/sourcesanspro/v9/ODelI1aHBYDBqgeIAH2zlJbPFduIYtoLzwST68uhz_Y.woff2) format('woff2');
+}
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 600;
+	src: local('Source Sans Pro Semibold'), local('SourceSansPro-Semibold'), url(https://fonts.gstatic.com/s/sourcesanspro/v9/toadOcfmlt9b38dHJxOBGMzFoXZ-Kj537nB_-9jJhlA.woff2) format('woff2');
+}
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 400;
+	src: local('Source Sans Pro Italic'), local('SourceSansPro-It'), url(https://fonts.gstatic.com/s/sourcesanspro/v9/M2Jd71oPJhLKp0zdtTvoM2Sl3jWJ3D9poyJPMfASioc.woff2) format('woff2');
+}
+
+
 * {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -26,7 +52,7 @@ $base0F: #ab7967;
 body {
 	background-color: White;
 	color: $base00;
-	font: normal 11pt/21px "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font: normal 11pt/21px "Source Sans Pro", "San Francisco Text", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
 	margin: 0;
 	overflow: hidden;
 	padding: 0;
@@ -174,7 +200,7 @@ a {
 		}
 	}
 	h2 {
-		font-weight: 500;
+		font-weight: 600;
 		padding: 0px 20px;
 		font-size: 11pt;
 		margin: 20px 0px 0px;
@@ -328,7 +354,7 @@ a {
 		background-color: White;
 		border: none;
 		color: $base00;
-		font: normal 11pt/40px "Proxima Nova", "Helvetica Neue", sans-serif;
+		font: normal 11pt/40px "Source Sans Pro", "San Francisco Text", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
 		padding: 0 10px;
 		margin: 0;
 		&.disconnected {
@@ -349,7 +375,7 @@ blockquote {
 	height: 12px;
 	padding: 0px 7px;
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: 600;
 	line-height: 6px;
 	color: $base00;
 	vertical-align: middle;
