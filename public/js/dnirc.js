@@ -2,11 +2,11 @@ var has_focus = true;
 var is_connected = false;
 
 window.onblur = function() {
-has_focus = false;
+	has_focus = false;
 }
 window.onfocus = function() {
-has_focus = true;
-changeFavicon("/images/favicon.png");
+	has_focus = true;
+	changeFavicon("/images/favicon.png");
 }
 
 document.head || (document.head = document.getElementsByTagName('head')[0]);
@@ -35,7 +35,7 @@ angular.module('dnirc', ['ngSanitize'])
 	})
 	.controller('RootCtrl', function($scope, $location) {})
 
-	.controller('MainCtrl', function($scope, Client, Notification, Config) {
+	.controller('MainCtrl', function($scope, Client, Config) {
 		$scope.client = Client;
 		$scope.config = Config;
 		$scope.userList = true;
@@ -50,25 +50,6 @@ angular.module('dnirc', ['ngSanitize'])
 				changeFavicon("/images/favicon.gif");
 			}
 		});
-
-		var colours = [
-			'#e51c23',
-			'#e91e63',
-			'#9c27b0',
-			'#673ab7',
-			'#3f51b5',
-			'#5677fc',
-			'#03a9f4',
-			'#00bcd4',
-			'#009688',
-			'#259b24',
-			'#8bc34a',
-			'#afb42b',
-			'#ff9800',
-			'#ff5722',
-			'#795548',
-			'#607d8b'
-		];
 
 		$scope.set_color = function(string) {
 			var sum = 0;
@@ -281,25 +262,6 @@ angular.module('dnirc')
 				}
 			},
 
-			// move forward one channel
-			nextChannel: function() {
-				if (!this.channels.length) {
-					return;
-				}
-				var index = _.indexOf(this.channels, this.activeChannel);
-				switch (index) {
-				case -1:
-					this.setActive(this.channels[0]);
-					break;
-				case this.channels.length - 1:
-					this.setActive(this.statusChannel);
-					break;
-				default:
-					this.setActive(this.channels[index + 1]);
-					break;
-				}
-			},
-
 			// leave a channel 
 			part: function(channel) {
 				this.say("/part " + channel.name);
@@ -316,7 +278,7 @@ angular.module('dnirc')
 				});
 			},
 
-			/* find a channel, given a name. returns undefined if not found. */
+			// find a channel, given a name. returns undefined if not found.
 			channel: function(name) {
 				if (name == 'status') {
 					return this.statusChannel;
@@ -354,10 +316,9 @@ angular.module('dnirc')
 			}
 		};
 
-		/* Initially our active channel is the status pane. */
+		// Initially our active channel is the status pane.
 		Client.activeChannel = Client.statusChannel;
 
-		/* handle private events from the socket.io connector */
 		socket.on('message', function(d) {
 			var event = new ChatEvent(
 				new User(d.from || ''),
@@ -371,6 +332,7 @@ angular.module('dnirc')
 
 		socket.on('successfullyJoinedChannel', function(d) {
 			Client.channels.push(new Channel(d.channel));
+			// Switch to joined channel
 			Client.activeChannel = Client.channel(d.channel);
 		});
 
@@ -428,7 +390,6 @@ angular.module('dnirc')
 		return Client;
 	});
 
-/* jshint browser:true */
 angular.module('dnirc')
 	.factory('Config', function($location) {
 		var search = $location.search();
@@ -441,22 +402,20 @@ angular.module('dnirc')
 			save: function() {}
 		};
 
-		if ('localStorage' in window) {
-			config.save = function() {
-				localStorage.setItem('dnirc:config', JSON.stringify(
-					{
-						nickname: this.nickname,
-						userName: this.nickname
-					}
-				));
-			};
-			config.load = function() {
-				var saved = JSON.parse(localStorage.getItem('dnirc:config') || '{}');
-				angular.extend(this, saved);
-			};
-		}
+		config.save = function() {
+			localStorage.setItem('dnirc:config', JSON.stringify(
+				{
+					nickname: this.nickname,
+					userName: this.nickname
+				}
+			));
+		};
+		config.load = function() {
+			var saved = JSON.parse(localStorage.getItem('dnirc:config') || '{}');
+			angular.extend(this, saved);
+		};
 
-		/* only load if no options were passed in as search */
+		// only load if no options were passed in as search
 		var anySet = _.any(['nick'], function(k) {
 			return (k in search);
 		});
@@ -513,11 +472,9 @@ angular.module('dnirc')
 					return guess ? guess.toString() : null;
 				}
 
-
 				element.bind("keydown", function(event) {
 					switch (event.which) {
-					case 9:
-						// tab
+					case 9: // tab
 						event.preventDefault();
 						var orig = element.val();
 						if ( (complete = suggestComplete(orig)) ) {
@@ -527,11 +484,8 @@ angular.module('dnirc')
 							element.val(update);
 							element[0].setSelectionRange(orig.length, update.length);
 						}
-
 						break;
-
-					case 13:
-						// enter
+					case 13: // enter
 						event.preventDefault();
 						scope.$apply(function() {
 							var text = element.val();
@@ -540,21 +494,15 @@ angular.module('dnirc')
 								text: text
 							});
 							addHistory(text);
-
-
 						});
 						break;
-					case 38:
-						// up
+					case 38: // up
 						event.preventDefault();
 						element.val(suggestHistory(-1));
-
 						break;
-					case 40:
-						// down
+					case 40: // down
 						event.preventDefault();
 						element.val(suggestHistory(1));
-
 						break;
 					}
 				});
@@ -571,78 +519,19 @@ angular.module('dnirc')
 				var glued = true;
 
 				element.bind('scroll', function() {
-					/* we should stick to the bottom if the scroll is currently at the
-					 * bottom of the element. */
+					// we should stick to the bottom if the scroll is currently at the
+					// bottom of the element.
 					glued = (elem.scrollTop + elem.clientHeight + 1 >= elem.scrollHeight);
 				});
 
 				scope.$watch(function() {
 					if (glued) {
-						/* stick to the bottom */
+						// stick to the bottom
 						elem.scrollTop = elem.scrollHeight;
 					}
 				});
 			}
 		};
-	});
-
-angular.module('dnirc')
-	.factory('Notification', function($q, $rootScope) {
-		var supported = ('Notification' in window);
-		var nativeNote = window.Notification;
-		var Notification = {};
-
-		Notification.notify = function(title, opts) {
-			var d = $q.defer();
-			if (!supported) {
-				d.reject();
-				return d.promise;
-			}
-
-			opts = opts || {};
-
-			var n = new nativeNote(title, opts);
-
-			n.onclick = function() {
-				$rootScope.$apply(d.resolve.bind(d));
-			};
-
-			/* if timeout provided, auto-close the notification */
-			if (opts.timeout) {
-				n.onshow = function() {
-					window.setTimeout(function() {
-						n.close();
-
-						d.reject(); /* user didn't click. */
-						$rootScope.$apply();
-					}, opts.timeout);
-				};
-			}
-
-			return d.promise;
-		};
-
-		Notification.request = function() {
-			var d = $q.defer();
-
-			if (!supported) {
-				d.reject();
-				return d.promise;
-			}
-
-			nativeNote.requestPermission(function(result) {
-				if (result === 'granted') {
-					d.resolve(result);
-				} else {
-					d.reject(result);
-				}
-				$rootScope.$apply();
-			});
-
-			return d.promise;
-		};
-
-		return Notification;
 	});
 
 angular.module('dnirc')
@@ -677,13 +566,13 @@ angular.module('dnirc')
 		User.prototype.rename = function(nick) {
 			var parts;
 			this.whole = nick;
-			/* is it in the format user!~login@host? */
+			// is it in the format user!~login@host?
 			if ( (parts = nick.match(User.NICK_REGEX)) ) {
 				this.nick = parts[1];
 				this.login = parts[2];
 				this.hostname = parts[3];
 			} else {
-				/* probably just a plain nick */
+				// probably just a plain nick
 				this.nick = nick;
 				this.login = null;
 				this.hostname = null;
@@ -705,12 +594,12 @@ angular.module('dnirc')
 		return User;
 	});
 
-window.onbeforeunload = function(e) {
-e = e || window.event;
+window.onbeforeunload = function(event) {
+event = event || window.event;
 
 if (is_connected) {
-	if (e) {
-		e.returnValue = 'Closing this window will disconnect you from the chat';
+	if (event) {
+		event.returnValue = 'Closing this window will disconnect you from the chat';
 	}
 	return 'Closing this window will disconnect you from the chat';
 }
