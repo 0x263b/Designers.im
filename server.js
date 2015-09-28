@@ -9,7 +9,8 @@ app.use(express.static(__dirname + '/public'));
 // Initialize the Server
 var server = http.createServer(app).listen(process.env.PORT || 3000);
 
-
+// To get link previews client side, links have to be passed to the server
+// eg. /og/?url=http://example.com/
 app.get('/og/', function(req, res) {
 	function print_info(data){
 		res.type('application/json');
