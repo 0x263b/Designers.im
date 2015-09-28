@@ -17,7 +17,9 @@ Freenode’s #DN is a channel for software designers. Unfortunately, most design
 - [x] Logging
 - [x] Link previews
 - [x] Mobile friendly
+- [ ] Broad link preview support
 - [ ] Theme support
+- [ ] Move configuration to a single file
 
 
 ### Developing
