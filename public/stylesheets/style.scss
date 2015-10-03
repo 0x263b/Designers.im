@@ -56,6 +56,7 @@ body {
 	margin: 0;
 	overflow: hidden;
 	padding: 0;
+	word-break: break-word;
 }
 
 html, body, .wrapper, .content {
@@ -403,9 +404,17 @@ blockquote {
 	}
 	.thumb {
 		line-height: 0;
-		img {
-			max-width: 150px;
-			max-height: 100px;
+		width: 120px;
+		min-height: 100px;
+		flex-shrink: 0;
+		-webkit-flex-shrink: 0;
+		background-size: cover;
+		background-position: center;
+		background-image: url('/images/placeholder.png');
+		a {
+			display: block;
+			width: 100%;
+			height: 100px;
 		}
 	}
 	.description {

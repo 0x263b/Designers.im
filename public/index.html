@@ -84,9 +84,8 @@
 					<div class="message">
 						<div ng-class="{'action' : event.action}" ng-bind-html="event.message | linky:'_blank'"></div>
 						<blockquote class="embed" ng-if="event.embed && event.embed.type == 'link'">
-							<div class="thumb">
+							<div class="thumb" style="background-image:url({{ event.embed.thumb }})">
 								<a href="{{ event.embed.link }}" target="_blank">
-									<img src="{{ event.embed.thumb }}" alt="">
 								</a>
 							</div>
 							<div class="description">

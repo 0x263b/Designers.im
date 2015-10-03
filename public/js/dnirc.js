@@ -112,6 +112,7 @@ angular.module('dnirc')
 			this.mode = opts.mode;
 			this.topic = opts.topic;
 			if (name !== 'status') {
+				// Load saved history
 				this.history = JSON.parse(localStorage.getItem("dnirc:" + this.name + ":history") || '[]');
 			} else {
 				this.history = [];
@@ -137,6 +138,7 @@ angular.module('dnirc')
 			}
 
 			if (this.name !== 'status') {
+				// Log channels to localStorage
 				localStorage.setItem("dnirc:" + this.name + ":history", JSON.stringify(this.history));
 			}
 		};
