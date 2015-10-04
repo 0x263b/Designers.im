@@ -17,9 +17,12 @@ Freenode’s #DN is a channel for software designers. Unfortunately, most design
 - [x] Logging
 - [x] Link previews
 - [x] Mobile friendly
-- [ ] Broad link preview support
-- [ ] Theme support
+- [ ] Expand link preview support; add video embedding
+- [ ] Darg & drop image upload ([imgur](https://api.imgur.com/))
+- [ ] Theme support and dark theme
 - [ ] Move configuration to a single file
+- [ ] [WEBIRC Support](https://kiwiirc.com/docs/installing/webirc)
+- [ ] [Web notifications](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API/Using_the_Notifications_API)
 
 
 ### Developing
@@ -27,7 +30,7 @@ Freenode’s #DN is a channel for software designers. Unfortunately, most design
 **Before you start** please note that a lot is currently hardcoded for #DN specifically.
 
 * Make sure you have the latest version of [Node.js](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/) installed
-*  Clone this repo `git clone https://github.com/killwhitey/Designers.im.git` 
+*  Clone this repo `git clone https://github.com/0x263b/Designers.im.git` 
 * Install Node dependencies `npm install`
 * Run `node server.js`
 
