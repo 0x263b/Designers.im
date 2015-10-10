@@ -83,16 +83,21 @@
 					<div class="sender" ng-class="set_color(event.from.nick)">{{event.from.nick}}</div>
 					<div class="message">
 						<div ng-class="{'action' : event.action}" ng-bind-html="event.message | linky:'_blank'"></div>
-						<blockquote class="embed" ng-if="event.embed && event.embed.type == 'link'">
-							<div class="thumb" style="background-image:url({{ event.embed.thumb }})">
-								<a href="{{ event.embed.link }}" target="_blank">
-								</a>
-							</div>
-							<div class="description">
-								<a href="{{ event.embed.link }}" target="_blank">
-									<h1>{{ event.embed.head }}</h1>
-									<p>{{ event.embed.body }}</p>
-								</a>
+						<blockquote ng-if="event.embed && event.embed.type == 'link'">
+							<a ng-click="linkEmbed = !linkEmbed">
+								<span class="expander">…</span>
+							</a>
+							<div class="embed" ng-init="linkEmbed = true" ng-show="linkEmbed">
+								<div class="thumb" style="background-image:url({{ event.embed.thumb || '/images/placeholder.png' }})">
+									<a href="{{ event.embed.link }}" target="_blank">
+									</a>
+								</div>
+								<div class="description">
+									<a href="{{ event.embed.link }}" target="_blank">
+										<h1>{{ event.embed.head }}</h1>
+										<p>{{ event.embed.body }}</p>
+									</a>
+								</div>
 							</div>
 						</blockquote>
 						
