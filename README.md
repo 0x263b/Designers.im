@@ -21,7 +21,6 @@ Freenode’s #DN is a channel for software designers. Unfortunately, most design
 - [ ] Darg & drop image upload ([imgur](https://api.imgur.com/))
 - [ ] Theme support and dark theme
 - [ ] Move configuration to a single file
-- [ ] [WEBIRC Support](https://kiwiirc.com/docs/installing/webirc)
 - [ ] [Web notifications](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API/Using_the_Notifications_API)
 
 

@@ -399,18 +399,12 @@ angular.module('dnirc')
 
 		var config = {
 			nickname: search.nick || randomnick,
-			userName: search.nick || randomnick,
 			load: function() {},
 			save: function() {}
 		};
 
 		config.save = function() {
-			localStorage.setItem('dnirc:config', JSON.stringify(
-				{
-					nickname: this.nickname,
-					userName: this.nickname
-				}
-			));
+			localStorage.setItem('dnirc:config', JSON.stringify({ nickname: this.nickname }));
 		};
 		config.load = function() {
 			var saved = JSON.parse(localStorage.getItem('dnirc:config') || '{}');
