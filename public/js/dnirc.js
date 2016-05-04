@@ -29,9 +29,11 @@ if (!Array.prototype.last) {
 	};
 }
 
+
 angular.module('dnirc', ['ngSanitize'])
-	.config(function($locationProvider) {
+	.config(function($locationProvider, $compileProvider) {
 		$locationProvider.html5Mode(true);
+		$compileProvider.debugInfoEnabled(false);
 	})
 	.controller('RootCtrl', function($scope, $location) {})
 

@@ -5,11 +5,11 @@
   "author": "Abram Kash",
   "repository": {
     "type": "git",
-    "url": "https://github.com/killwhitey/designers.im.git"
+    "url": "https://github.com/0x263b/designers.im.git"
   },
   "license": "MIT",
   "engines": {
-    "node": "5.x"
+    "node": "6.x"
   },
   "main": "server.js",
   "scripts": {
